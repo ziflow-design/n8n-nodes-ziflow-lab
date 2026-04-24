@@ -98,11 +98,12 @@ export class ZiflowTrigger implements INodeType {
 					},
 				};
 
-				// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-				// @ts-ignore IHookFunctions is in the IAllExecuteFunctions union; n8n binds helpers correctly
-				const response = (await this.helpers.httpRequestWithAuthentication('ziflowApi', {
+				const credentials = await this.getCredentials('ziflowApi');
+				// eslint-disable-next-line @n8n/community-nodes/no-http-request-with-manual-auth
+				const response = (await this.helpers.httpRequest({
 					method: 'POST',
 					url: `${ZIFLOW_API_BASE}/webhooks`,
+					headers: { apikey: credentials.apiKey as string },
 					body,
 					json: true,
 				})) as { id: string; signature_key: string };
@@ -118,12 +119,12 @@ export class ZiflowTrigger implements INodeType {
 				const subscriptionId = webhookData.subscriptionId as string | undefined;
 				if (!subscriptionId) return true;
 
-				// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-				// @ts-ignore IHookFunctions is in the IAllExecuteFunctions union; n8n binds helpers correctly
-				await this.helpers.httpRequestWithAuthentication('ziflowApi', {
+				const credentials = await this.getCredentials('ziflowApi');
+				// eslint-disable-next-line @n8n/community-nodes/no-http-request-with-manual-auth
+				await this.helpers.httpRequest({
 					method: 'DELETE',
 					url: `${ZIFLOW_API_BASE}/webhooks/${subscriptionId}`,
-					json: true,
+					headers: { apikey: credentials.apiKey as string },
 				});
 
 				delete webhookData.subscriptionId;
