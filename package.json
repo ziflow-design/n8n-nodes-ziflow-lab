@@ -1,6 +1,6 @@
 {
 	"name": "n8n-nodes-ziflow-lab",
-	"version": "0.0.8",
+	"version": "0.0.9",
 	"description": "n8n nodes for the Ziflow creative review and proofing platform",
 	"license": "MIT",
 	"homepage": "https://github.com/ziflow-design/n8n-nodes-ziflow-lab",
