@@ -8,6 +8,7 @@ import {
 export class ZiflowApi implements ICredentialType {
 	name = 'ziflowApi';
 	displayName = 'Ziflow API';
+	icon = 'file:ziflow.svg' as const;
 	documentationUrl = 'https://docs.ziflow.com/en/api-documentation';
 	properties: INodeProperties[] = [
 		{

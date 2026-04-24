@@ -17,6 +17,7 @@ export class Ziflow implements INodeType {
 		displayName: 'Ziflow',
 		name: 'ziflow',
 		icon: 'file:ziflow.svg',
+		usableAsTool: true,
 		group: ['transform'],
 		version: 1,
 		subtitle: '={{$parameter["operation"] + ": " + $parameter["resource"]}}',

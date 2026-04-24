@@ -18,6 +18,7 @@ export class ZiflowTrigger implements INodeType {
 		displayName: 'Ziflow Trigger',
 		name: 'ziflowTrigger',
 		icon: 'file:ziflow.svg',
+		usableAsTool: true,
 		group: ['trigger'],
 		version: 1,
 		description: 'Starts the workflow when Ziflow proof events occur',
@@ -78,8 +79,6 @@ export class ZiflowTrigger implements INodeType {
 
 			async create(this: IHookFunctions): Promise<boolean> {
 				const webhookUrl = this.getNodeWebhookUrl('default') as string;
-				console.log('[ZiflowTrigger] registering webhook target:', webhookUrl);
-				const credentials = await this.getCredentials('ziflowApi');
 				const events = this.getNodeParameter('events') as string[];
 				const workflowName = this.getWorkflow().name ?? 'n8n workflow';
 
@@ -98,10 +97,11 @@ export class ZiflowTrigger implements INodeType {
 					},
 				};
 
-				const response = (await this.helpers.request({
+				// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+				// @ts-ignore IHookFunctions is in the IAllExecuteFunctions union; n8n binds helpers correctly
+				const response = (await this.helpers.httpRequestWithAuthentication('ziflowApi', {
 					method: 'POST',
-					uri: `${ZIFLOW_API_BASE}/webhooks`,
-					headers: { apikey: credentials.apiKey as string },
+					url: `${ZIFLOW_API_BASE}/webhooks`,
 					body,
 					json: true,
 				})) as { id: string; signature_key: string };
@@ -117,11 +117,11 @@ export class ZiflowTrigger implements INodeType {
 				const subscriptionId = webhookData.subscriptionId as string | undefined;
 				if (!subscriptionId) return true;
 
-				const credentials = await this.getCredentials('ziflowApi');
-				await this.helpers.request({
+				// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+				// @ts-ignore IHookFunctions is in the IAllExecuteFunctions union; n8n binds helpers correctly
+				await this.helpers.httpRequestWithAuthentication('ziflowApi', {
 					method: 'DELETE',
-					uri: `${ZIFLOW_API_BASE}/webhooks/${subscriptionId}`,
-					headers: { apikey: credentials.apiKey as string },
+					url: `${ZIFLOW_API_BASE}/webhooks/${subscriptionId}`,
 					json: true,
 				});
 
