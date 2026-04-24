@@ -1,262 +1,116 @@
-![Banner image](https://user-images.githubusercontent.com/10284570/173569848-c624317f-42b1-45a6-ab09-f0ea3c247648.png)
+# n8n-nodes-ziflow
 
-# n8n-nodes-starter
+[n8n](https://n8n.io) community nodes for the [Ziflow](https://ziflow.com) creative review and proofing platform. Automate proof creation, reviewer management, and workflow orchestration directly inside n8n.
 
-This starter repository helps you build custom integrations for [n8n](https://n8n.io). It includes example nodes, credentials, the node linter, and all the tooling you need to get started.
+## Nodes
 
-## Quick Start
+### Ziflow
 
-> [!TIP]
-> **New to building n8n nodes?** The fastest way to get started is with `npm create @n8n/node`. This command scaffolds a complete node package for you using the [@n8n/node-cli](https://www.npmjs.com/package/@n8n/node-cli).
+An action node for interacting with the Ziflow REST API. Supports eight resources:
 
-**To create a new node package from scratch:**
+| Resource | Operations |
+|---|---|
+| **Proof** | Create, Get, List, Update, Delete |
+| **Comment** | Create, Get, List |
+| **Folder** | Create, Get, List, Update, Delete |
+| **Reviewer** | Add, Get, Update, Delete |
+| **Stage** | Update |
+| **User** | Create, Get, List, Update, Delete |
+| **Webhook** | Create, List, Delete |
+| **Workflow Template** | Create, Get, List, Update, Delete |
 
-```bash
-npm create @n8n/node
-```
+### Ziflow Trigger
 
-**Already using this starter? Start developing with:**
+A webhook trigger node that starts an n8n workflow when Ziflow proof events occur. On activation it automatically registers a webhook with Ziflow and validates incoming requests using HMAC-SHA256 signature verification. On deactivation it removes the webhook from Ziflow.
 
-```bash
-npm run dev
-```
+Supported events:
 
-This starts n8n with your nodes loaded and hot reload enabled.
+- All Events
+- Comment / Comment Reaction
+- Complete Review
+- Created / Deleted / Restored
+- Decision
+- First Opened
+- Mentions
+- Processed
+- Shared
+- Stage Deadline Passed / Stage Locked / Stage Started
+- Status Change
+- Summary
 
-## What's Included
+## Authentication
 
-This starter repository includes two example nodes to learn from:
+Both nodes use the **Ziflow API** credential type, which authenticates with a single API key sent as the `apikey` header. You can find or generate your API key in your Ziflow account settings.
 
-- **[Example Node](nodes/Example/)** - A simple starter node that shows the basic structure with a custom `execute` method
-- **[GitHub Issues Node](nodes/GithubIssues/)** - A complete, production-ready example built using the **declarative style**:
-  - **Low-code approach** - Define operations declaratively without writing request logic
-  - Multiple resources (Issues, Comments)
-  - Multiple operations (Get, Get All, Create)
-  - Two authentication methods (OAuth2 and Personal Access Token)
-  - List search functionality for dynamic dropdowns
-  - Proper error handling and typing
-  - Ideal for HTTP API-based integrations
+## Local Development Setup
 
-> [!TIP]
-> The declarative/low-code style (used in GitHub Issues) is the recommended approach for building nodes that interact with HTTP APIs. It significantly reduces boilerplate code and handles requests automatically.
+### Prerequisites
 
-Browse these examples to understand both approaches, then modify them or create your own.
+- **Node.js v22+** — install via [nvm](https://github.com/nvm-sh/nvm) (recommended) or from [nodejs.org](https://nodejs.org)
+- **npm** (bundled with Node.js)
+- **git**
 
-## Finding Inspiration
+### Steps
 
-Looking for more examples? Check out these resources:
+1. **Clone the repo**
 
-- **[npm Community Nodes](https://www.npmjs.com/search?q=keywords:n8n-community-node-package)** - Browse thousands of community-built nodes on npm using the `n8n-community-node-package` tag
-- **[n8n Built-in Nodes](https://github.com/n8n-io/n8n/tree/master/packages/nodes-base/nodes)** - Study the source code of n8n's official nodes for production-ready patterns and best practices
-- **[n8n Credentials](https://github.com/n8n-io/n8n/tree/master/packages/nodes-base/credentials)** - See how authentication is implemented for various services
+   ```bash
+   git clone https://github.com/ziflow-design/ziflow-n8n-lab.git
+   cd n8n-nodes-ziflow
+   ```
 
-These are excellent resources to understand how to structure your nodes, handle different API patterns, and implement advanced features.
+2. **Install dependencies**
 
-## Prerequisites
+   ```bash
+   npm install
+   ```
 
-Before you begin, install the following on your development machine:
+   This installs all dev dependencies including `@n8n/node-cli`, which bundles n8n for local development — no separate n8n installation needed.
 
-### Required
+3. **Start the dev server**
 
-- **[Node.js](https://nodejs.org/)** (v22 or higher) and npm
-  - Linux/Mac/WSL: Install via [nvm](https://github.com/nvm-sh/nvm)
-  - Windows: Follow [Microsoft's NodeJS guide](https://learn.microsoft.com/en-us/windows/dev-environment/javascript/nodejs-on-windows)
-- **[git](https://git-scm.com/downloads)**
+   ```bash
+   npm run dev
+   ```
 
-### Recommended
+   This builds the TypeScript, starts a local n8n instance with the Ziflow nodes loaded, and watches for file changes. n8n opens at [http://localhost:5678](http://localhost:5678).
 
-- Follow n8n's [development environment setup guide](https://docs.n8n.io/integrations/creating-nodes/build/node-development-environment/)
+4. **Add your credentials in n8n**
 
-> [!NOTE]
-> The `@n8n/node-cli` is included as a dev dependency and will be installed automatically when you run `npm install`. The CLI includes n8n for local development, so you don't need to install n8n globally.
+   In the local n8n UI, create a **Ziflow API** credential and paste your Ziflow API key. The credential is verified automatically against `GET /v1/users`.
 
-## Getting Started with this Starter
+5. **Build your workflows**
 
-Follow these steps to create your own n8n community node package:
+   Add the **Ziflow** or **Ziflow Trigger** node to a workflow and start testing.
 
-### 1. Create Your Repository
+### Available Scripts
 
-[Generate a new repository](https://github.com/n8n-io/n8n-nodes-starter/generate) from this template, then clone it:
+| Script | Description |
+|---|---|
+| `npm run dev` | Start n8n with nodes loaded and watch for changes |
+| `npm run build` | Compile TypeScript to `dist/` for production |
+| `npm run build:watch` | Compile in watch mode (no n8n instance) |
+| `npm run lint` | Check for errors and style issues |
+| `npm run lint:fix` | Auto-fix linting issues |
+| `npm run release` | Bump version, update changelog, tag, and push |
 
-```bash
-git clone https://github.com/<your-organization>/<your-repo-name>.git
-cd <your-repo-name>
-```
+### Troubleshooting
 
-### 2. Install Dependencies
-
-```bash
-npm install
-```
-
-This installs all required dependencies including the `@n8n/node-cli`.
-
-### 3. Explore the Examples
-
-Browse the example nodes in [nodes/](nodes/) and [credentials/](credentials/) to understand the structure:
-
-- Start with [nodes/Example/](nodes/Example/) for a basic node
-- Study [nodes/GithubIssues/](nodes/GithubIssues/) for a real-world implementation
-
-### 4. Build Your Node
-
-Edit the example nodes to fit your use case, or create new node files by copying the structure from [nodes/Example/](nodes/Example/).
-
-> [!TIP]
-> If you want to scaffold a completely new node package, use `npm create @n8n/node` to start fresh with the CLI's interactive generator.
-
-### 5. Configure Your Package
-
-Update `package.json` with your details:
-
-- `name` - Your package name (must start with `n8n-nodes-`)
-- `author` - Your name and email
-- `repository` - Your repository URL
-- `description` - What your node does
-
-Make sure your node is registered in the `n8n.nodes` array.
-
-### 6. Develop and Test Locally
-
-Start n8n with your node loaded:
-
-```bash
-npm run dev
-```
-
-This command runs `n8n-node dev` which:
-
-- Builds your node with watch mode
-- Starts n8n with your node available
-- Automatically rebuilds when you make changes
-- Opens n8n in your browser (usually http://localhost:5678)
-
-You can now test your node in n8n workflows!
-
-> [!NOTE]
-> Learn more about CLI commands in the [@n8n/node-cli documentation](https://www.npmjs.com/package/@n8n/node-cli).
-
-### 7. Lint Your Code
-
-Check for errors:
-
-```bash
-npm run lint
-```
-
-Auto-fix issues when possible:
-
-```bash
-npm run lint:fix
-```
-
-### 8. Build for Production
-
-When ready to publish:
-
-```bash
-npm run build
-```
-
-This compiles your TypeScript code to the `dist/` folder.
-
-### 9. Prepare for Publishing
-
-Before publishing:
-
-1. **Update documentation**: Replace this README with your node's documentation. Use [README_TEMPLATE.md](README_TEMPLATE.md) as a starting point.
-2. **Update the LICENSE**: Add your details to the [LICENSE](LICENSE.md) file.
-3. **Test thoroughly**: Ensure your node works in different scenarios.
-
-### 10. Publish to npm
-
-Publishing is handled automatically by the included GitHub Actions workflow ([.github/workflows/publish.yml](.github/workflows/publish.yml)). It runs on every version tag push and publishes to npm with a provenance attestation — a requirement for n8n community nodes starting May 1, 2026.
-
-#### One-time setup
-
-Configure npm to trust this repository's GitHub Actions workflow so it can publish on your behalf. Log in to [npmjs.com](https://npmjs.com), open your package settings, and under **Publish access → Trusted Publishers** add a publisher with:
-
-- **Repository owner**: your GitHub username or org
-- **Repository name**: your repo name
-- **Workflow name**: `publish.yml`
-
-No token or secret needs to be stored in GitHub — the workflow uses GitHub's OIDC token instead.
-
-> [!NOTE]
-> If you prefer a traditional npm token, create a Granular Access Token on npmjs.com and store it as `NPM_TOKEN` in your repository's Actions secrets. See the comments at the top of `.github/workflows/publish.yml` for details.
-
-#### Releasing a new version
-
-```bash
-npm run release
-```
-
-This lints, builds, prompts for a version bump, updates the changelog, commits, tags, and pushes — which triggers the workflow to publish to npm.
-
-### 11. Submit for Verification (Optional)
-
-Get your node verified for n8n Cloud:
-
-1. Ensure your node meets the [requirements](https://docs.n8n.io/integrations/creating-nodes/deploy/submit-community-nodes/):
-   - Uses MIT license ✅ (included in this starter)
-   - No external package dependencies
-   - Follows n8n's design guidelines
-   - Passes quality and security review
-
-2. Submit through the [n8n Creator Portal](https://creators.n8n.io/nodes)
-
-**Benefits of verification:**
-
-- Available directly in n8n Cloud
-- Discoverable in the n8n nodes panel
-- Verified badge for quality assurance
-- Increased visibility in the n8n community
-
-## Available Scripts
-
-This starter includes several npm scripts to streamline development:
-
-| Script                | Description                                                                 |
-| --------------------- | --------------------------------------------------------------------------- |
-| `npm run dev`         | Start n8n with your node and watch for changes (runs `n8n-node dev`)        |
-| `npm run build`       | Compile TypeScript to JavaScript for production (runs `n8n-node build`)     |
-| `npm run build:watch` | Build in watch mode (auto-rebuild on changes)                               |
-| `npm run lint`        | Check your code for errors and style issues (runs `n8n-node lint`)          |
-| `npm run lint:fix`    | Automatically fix linting issues when possible (runs `n8n-node lint --fix`) |
-| `npm run release`     | Create a new release (runs `n8n-node release`)                              |
-
-> [!TIP]
-> These scripts use the [@n8n/node-cli](https://www.npmjs.com/package/@n8n/node-cli) under the hood. You can also run CLI commands directly, e.g., `npx n8n-node dev`.
-
-## Troubleshooting
-
-### My node doesn't appear in n8n
-
-1. Make sure you ran `npm install` to install dependencies
-2. Check that your node is listed in `package.json` under `n8n.nodes`
-3. Restart the dev server with `npm run dev`
-4. Check the console for any error messages
-
-### Linting errors
-
-Run `npm run lint:fix` to automatically fix most common issues. For remaining errors, check the [n8n node development guidelines](https://docs.n8n.io/integrations/creating-nodes/).
-
-### TypeScript errors
-
-Make sure you're using Node.js v22 or higher and have run `npm install` to get all type definitions.
+**Node doesn't appear in n8n**
+- Confirm it's listed in `package.json` under `n8n.nodes`
+- Restart the dev server with `npm run dev`
+- Check the terminal for TypeScript or build errors
+
+**TypeScript errors**
+- Ensure you're on Node.js v22 or higher
+- Run `npm install` to make sure all type definitions are present
 
 ## Resources
 
-- **[n8n Node Documentation](https://docs.n8n.io/integrations/creating-nodes/)** - Complete guide to building nodes
-- **[n8n Community Forum](https://community.n8n.io/)** - Get help and share your nodes
-- **[@n8n/node-cli Documentation](https://www.npmjs.com/package/@n8n/node-cli)** - CLI tool reference
-- **[n8n Creator Portal](https://creators.n8n.io/nodes)** - Submit your node for verification
-- **[Submit Community Nodes Guide](https://docs.n8n.io/integrations/creating-nodes/deploy/submit-community-nodes/)** - Verification requirements and process
-
-## Contributing
-
-Have suggestions for improving this starter? [Open an issue](https://github.com/n8n-io/n8n-nodes-starter/issues) or submit a pull request!
+- [Ziflow API Documentation](https://docs.ziflow.com/en/api-documentation)
+- [n8n Node Development Guide](https://docs.n8n.io/integrations/creating-nodes/)
+- [@n8n/node-cli Documentation](https://www.npmjs.com/package/@n8n/node-cli)
 
 ## License
 
-[MIT](https://github.com/n8n-io/n8n-nodes-starter/blob/master/LICENSE.md)
+[MIT](LICENSE.md)
