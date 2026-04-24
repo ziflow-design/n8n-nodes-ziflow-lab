@@ -21,6 +21,7 @@ export class ZiflowTrigger implements INodeType {
 		usableAsTool: true,
 		group: ['trigger'],
 		version: 1,
+		subtitle: '={{$parameter["events"].join(", ")}}',
 		description: 'Starts the workflow when Ziflow proof events occur',
 		defaults: { name: 'Ziflow Trigger' },
 		inputs: [],
