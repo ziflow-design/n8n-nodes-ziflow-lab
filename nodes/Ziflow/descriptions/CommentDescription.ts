@@ -39,8 +39,8 @@ export const commentOperations: INodeProperties[] = [
 				action: 'Label a comment',
 				routing: {
 					request: {
-						method: 'POST',
-						url: '=/proofs/{{$parameter["proofId"]}}/comments/{{$parameter["commentId"]}}/label',
+						method: 'PUT',
+						url: '=/proofs/{{$parameter["proofId"]}}/comments/{{$parameter["commentId"]}}/labels',
 					},
 				},
 			},
@@ -153,8 +153,26 @@ export const commentFields: INodeProperties[] = [
 				name: 'page',
 				type: 'number',
 				default: 1,
-				description: 'Page/frame number to attach the comment to',
-				routing: { send: { type: 'body', property: 'page' } },
+				description: 'Page or frame number to attach the comment to (static, rich media, and live website proofs)',
+				routing: { send: { type: 'body', property: 'location.page' } },
+			},
+			{
+				displayName: 'Start Time',
+				name: 'startTime',
+				type: 'string',
+				default: '',
+				placeholder: '00:00:00.000',
+				description: 'Start timestamp for the comment in HH:mm:ss.SSS format (audio and video proofs)',
+				routing: { send: { type: 'body', property: 'location.start_time' } },
+			},
+			{
+				displayName: 'End Time',
+				name: 'endTime',
+				type: 'string',
+				default: '',
+				placeholder: '00:00:00.000',
+				description: 'End timestamp for the comment in HH:mm:ss.SSS format (audio and video proofs)',
+				routing: { send: { type: 'body', property: 'location.end_time' } },
 			},
 		],
 	},
@@ -177,13 +195,13 @@ export const commentFields: INodeProperties[] = [
 
 	// ── Label ─────────────────────────────────────────────────────────────────
 	{
-		displayName: 'Label',
-		name: 'label',
+		displayName: 'Label ID',
+		name: 'labelId',
 		type: 'string',
 		required: true,
 		default: '',
 		displayOptions: { show: { resource: ['comment'], operation: ['label'] } },
-		description: 'Label text to apply to the comment',
-		routing: { send: { type: 'body', property: 'label' } },
+		description: 'ID of the label to apply to the comment',
+		routing: { send: { type: 'body', property: 'ids', value: '={{ [$value] }}' } },
 	},
 ];
