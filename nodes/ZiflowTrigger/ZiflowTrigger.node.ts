@@ -50,6 +50,7 @@ export class ZiflowTrigger implements INodeType {
 				description: 'Proof events to listen for',
 				options: [
 					{ name: 'All Events', value: 'all' },
+					{ name: 'Changed', value: 'changed' },
 					{ name: 'Comment', value: 'comment' },
 					{ name: 'Comment Reaction', value: 'comment_reaction' },
 					{ name: 'Complete Review', value: 'complete_review' },
