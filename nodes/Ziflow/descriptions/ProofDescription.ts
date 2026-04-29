@@ -28,7 +28,7 @@ export const proofOperations: INodeProperties[] = [
 				description: 'Export a PDF of all comments on a proof',
 				action: 'Export comments PDF for a proof',
 				routing: {
-					request: { method: 'POST', url: '=/proofs/{{$parameter["proofId"]}}/export/comment' },
+					request: { method: 'POST', url: '=/proofs/{{$parameter["proofId"]}}/comments/pdf' },
 				},
 			},
 			{
@@ -37,7 +37,7 @@ export const proofOperations: INodeProperties[] = [
 				description: 'Export a summary PDF for a proof',
 				action: 'Export summary PDF for a proof',
 				routing: {
-					request: { method: 'POST', url: '=/proofs/{{$parameter["proofId"]}}/export/summary' },
+					request: { method: 'POST', url: '=/proofs/{{$parameter["proofId"]}}/summary/pdf' },
 				},
 			},
 			{
@@ -66,7 +66,7 @@ export const proofOperations: INodeProperties[] = [
 				value: 'makeDecision',
 				description: 'Submit a review decision on a proof',
 				action: 'Make a decision on a proof',
-				routing: { request: { method: 'POST', url: '=/proofs/{{$parameter["proofId"]}}/decision' } },
+				routing: { request: { method: 'POST', url: '=/proofs/{{$parameter["proofId"]}}/reviewers/status' } },
 			},
 			{
 				name: 'Search',
@@ -269,12 +269,13 @@ export const proofFields: INodeProperties[] = [
 		routing: { send: { type: 'body', property: 'decision' } },
 	},
 	{
-		displayName: 'Decision Reason',
-		name: 'decisionReason',
-		type: 'string',
-		default: '',
+		displayName: 'Completed',
+		name: 'completed',
+		type: 'boolean',
+		required: true,
+		default: true,
 		displayOptions: { show: { resource: ['proof'], operation: ['makeDecision'] } },
-		description: 'Optional reason or comment for the decision',
-		routing: { send: { type: 'body', property: 'reason' } },
+		description: 'Whether to mark the review as completed',
+		routing: { send: { type: 'body', property: 'completed' } },
 	},
 ];
