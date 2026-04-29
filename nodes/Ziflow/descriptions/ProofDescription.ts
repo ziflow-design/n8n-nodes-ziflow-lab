@@ -73,7 +73,7 @@ export const proofOperations: INodeProperties[] = [
 				value: 'search',
 				description: 'Search for proofs',
 				action: 'Search proofs',
-				routing: { request: { method: 'GET', url: '/proofs' } },
+				routing: { request: { method: 'POST', url: '/proofs/search' } },
 			},
 			{
 				name: 'Update',
@@ -126,13 +126,13 @@ export const proofFields: INodeProperties[] = [
 		routing: { send: { type: 'query', property: 'page' } },
 	},
 	{
-		displayName: 'Search Query',
-		name: 'query',
+		displayName: 'Name',
+		name: 'name',
 		type: 'string',
 		default: '',
 		displayOptions: { show: { resource: ['proof'], operation: ['search'] } },
-		description: 'Text to search for in proof names',
-		routing: { send: { type: 'query', property: 'query' } },
+		description: 'Filter by proof name',
+		routing: { send: { type: 'body', property: 'name', value: '={{ $value ? [$value] : undefined }}' } },
 	},
 
 	// ── Create ────────────────────────────────────────────────────────────────
