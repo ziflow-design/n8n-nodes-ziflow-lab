@@ -99,14 +99,22 @@ export class ZiflowTrigger implements INodeType {
 				};
 
 				const credentials = await this.getCredentials('ziflowApi');
-				// eslint-disable-next-line @n8n/community-nodes/no-http-request-with-manual-auth
-				const response = (await this.helpers.httpRequest({
-					method: 'POST',
-					url: `${ZIFLOW_API_BASE}/webhooks`,
-					headers: { apikey: credentials.apiKey as string },
-					body,
-					json: true,
-				})) as { id: string; signature_key: string };
+				let response: { id: string; signature_key: string };
+				try {
+					// eslint-disable-next-line @n8n/community-nodes/no-http-request-with-manual-auth
+					response = (await this.helpers.httpRequest({
+						method: 'POST',
+						url: `${ZIFLOW_API_BASE}/webhooks`,
+						headers: { apikey: credentials.apiKey as string },
+						body,
+						json: true,
+					})) as { id: string; signature_key: string };
+				} catch (error: unknown) {
+					const e = error as { response?: { data?: unknown; status?: number } };
+					throw new Error(
+						`Ziflow webhook creation failed (${e.response?.status ?? 'unknown'}): ${JSON.stringify(e.response?.data ?? error)}`,
+					);
+				}
 
 				const webhookData = this.getWorkflowStaticData('node');
 				webhookData.subscriptionId = response.id;

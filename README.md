@@ -96,6 +96,34 @@ Both nodes use the **Ziflow API** credential type, which authenticates with a si
 | `npm run lint:fix` | Auto-fix linting issues |
 | `npm run release` | Bump version, update changelog, tag, and push |
 
+### Testing the Ziflow Trigger locally
+
+The **Ziflow Trigger** node registers a webhook with Ziflow when a workflow is activated or test-run. Ziflow requires the webhook URL to be a publicly reachable HTTPS endpoint — `localhost` URLs are rejected.
+
+Use [ngrok](https://ngrok.com) to expose your local n8n instance:
+
+1. **Install ngrok** — follow the [ngrok quickstart](https://ngrok.com/docs/getting-started/) and authenticate with your account.
+
+2. **Start ngrok** in a separate terminal, pointing at n8n's default port:
+
+   ```bash
+   ngrok http 5678
+   ```
+
+   ngrok will print a public URL like `https://your-subdomain.ngrok-free.app`.
+
+3. **Set `WEBHOOK_URL` in your `.env` file** to the ngrok URL:
+
+   ```
+   WEBHOOK_URL=https://your-subdomain.ngrok-free.app
+   ```
+
+   The `npm run dev` script loads `.env` automatically. This tells n8n to use the ngrok URL when registering webhooks with Ziflow instead of `localhost`.
+
+4. Open n8n at `https://your-subdomain.ngrok-free.app` (not `localhost`) to avoid browser/cookie issues, then test your Ziflow Trigger workflow as normal.
+
+> **Note:** Free ngrok accounts get a different URL each session. Re-start n8n with the new `WEBHOOK_URL` value each time ngrok restarts.
+
 ### Troubleshooting
 
 **Node doesn't appear in n8n**
@@ -106,6 +134,10 @@ Both nodes use the **Ziflow API** credential type, which authenticates with a si
 **TypeScript errors**
 - Ensure you're on Node.js v22 or higher
 - Run `npm install` to make sure all type definitions are present
+
+**Ziflow Trigger returns 422 on activation**
+- Ziflow requires a public HTTPS webhook URL — see [Testing the Ziflow Trigger locally](#testing-the-ziflow-trigger-locally) above
+- Check that `WEBHOOK_URL` is set to your current ngrok URL before starting n8n
 
 ## Resources
 

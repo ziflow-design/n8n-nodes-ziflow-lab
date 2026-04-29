@@ -1,3 +1,5 @@
 dist
 node_modules
 specs
+.env
+openapi.json

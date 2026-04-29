@@ -63,7 +63,7 @@ export const commentOperations: INodeProperties[] = [
 				action: 'Resolve a comment',
 				routing: {
 					request: {
-						method: 'POST',
+						method: 'PUT',
 						url: '=/proofs/{{$parameter["proofId"]}}/comments/{{$parameter["commentId"]}}/resolve',
 					},
 				},
@@ -157,6 +157,22 @@ export const commentFields: INodeProperties[] = [
 				routing: { send: { type: 'body', property: 'page' } },
 			},
 		],
+	},
+
+	// ── Resolve ───────────────────────────────────────────────────────────────
+	{
+		displayName: 'Resolution Type',
+		name: 'resolveType',
+		type: 'options',
+		required: true,
+		default: 'resolved',
+		displayOptions: { show: { resource: ['comment'], operation: ['resolve'] } },
+		description: 'Whether to resolve or unresolve the comment',
+		options: [
+			{ name: 'Resolved', value: 'resolved' },
+			{ name: 'Unresolved', value: 'unresolved' },
+		],
+		routing: { send: { type: 'body', property: 'type' } },
 	},
 
 	// ── Label ─────────────────────────────────────────────────────────────────
