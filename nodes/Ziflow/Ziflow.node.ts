@@ -1,6 +1,7 @@
 import { INodeType, INodeTypeDescription, NodeConnectionTypes } from 'n8n-workflow';
 
 import { commentFields, commentOperations } from './descriptions/CommentDescription';
+import { commentLabelFields, commentLabelOperations } from './descriptions/CommentLabelDescription';
 import { folderFields, folderOperations } from './descriptions/FolderDescription';
 import { proofFields, proofOperations } from './descriptions/ProofDescription';
 import { reviewerFields, reviewerOperations } from './descriptions/ReviewerDescription';
@@ -45,6 +46,7 @@ export class Ziflow implements INodeType {
 				noDataExpression: true,
 				options: [
 					{ name: 'Comment', value: 'comment' },
+					{ name: 'Comment Label', value: 'commentLabel' },
 					{ name: 'Folder', value: 'folder' },
 					{ name: 'Proof', value: 'proof' },
 					{ name: 'Reviewer', value: 'reviewer' },
@@ -58,6 +60,7 @@ export class Ziflow implements INodeType {
 
 			// Resource operations
 			...commentOperations,
+			...commentLabelOperations,
 			...folderOperations,
 			...proofOperations,
 			...reviewerOperations,
@@ -68,6 +71,7 @@ export class Ziflow implements INodeType {
 
 			// Resource fields
 			...commentFields,
+			...commentLabelFields,
 			...folderFields,
 			...proofFields,
 			...reviewerFields,
